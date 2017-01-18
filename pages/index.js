@@ -52,23 +52,23 @@ export default class extends Component {
 
         <button onClick={() => window.print()}>Print</button>
 
-        {range(this.state.n).map(() => (
-          <div className="container">
-            {letters.map((letter) => <div className="box"><strong>{letter}</strong></div>)}
-            {bingo().map((value) => <div className="box">{value}</div>)}
+        {range(this.state.n).map((i) => (
+          <div className="container" key={i}>
+            {letters.map((letter) => <div className="box" key={letter}><strong>{letter}</strong></div>)}
+            {bingo().map((value) => <div className="box" key={value}>{value}</div>)}
             {!this.props.premium && <Logo />}
           </div>
         ))}
 
         <style jsx>{`
-          * {
+          :global(*) {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-font-smoothing: antialiased;
           }
 
-          body {
+          :global(body) {
             font-family: sans-serif;
             font-size: 26px;
             display: flex;
@@ -77,8 +77,9 @@ export default class extends Component {
             margin-top: 30px;
           }
 
-          form {
+          :global(form) {
             display: flex;
+            background: red;
           }
 
           @media print {
@@ -88,12 +89,14 @@ export default class extends Component {
           }
 
           input {
-            flex: 1
+            padding: 5px;
+            font-size: 18px;
+            flex: 1;
           }
 
-          input, button {
+          button {
             padding: 5px;
-            font-size: 16px;
+            font-size: 18px;
           }
 
           .container {
