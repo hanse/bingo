@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import Head from 'next/head';
 import { shuffle, chunk, flatten, unzip, range } from 'lodash';
 
 function bingo() {
@@ -10,10 +11,24 @@ function bingo() {
 
 const letters = ['B', 'I', 'N', 'G', 'O'];
 
+function Logo() {
+  return (
+    <p style={{ padding: 10 }}>
+      <span style={{ fontSize: 12 }}>premiumbingocards.com</span>
+    </p>
+  );
+}
+
 export default class extends Component {
   state = {
     n: 1
   };
+
+  static async getInitialProps({ query }) {
+    return {
+      premium: query.premium !== undefined
+    };
+  }
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -23,6 +38,9 @@ export default class extends Component {
   render() {
     return (
       <div>
+        <Head>
+          <title>Premium Bingo Cards</title>
+        </Head>
         <form onSubmit={this.handleSubmit}>
           <input
             type="number"
@@ -38,6 +56,7 @@ export default class extends Component {
           <div className="container">
             {letters.map((letter) => <div className="box"><strong>{letter}</strong></div>)}
             {bingo().map((value) => <div className="box">{value}</div>)}
+            {!this.props.premium && <Logo />}
           </div>
         ))}
 
