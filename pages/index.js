@@ -3,8 +3,8 @@ import Head from 'next/head';
 import { shuffle, chunk, flatten, unzip, range } from 'lodash';
 
 function bingo() {
-  const numbers = chunk(range(75).map((n) => n + 1), 15);
-  const shuffled = flatten(unzip(numbers.map(shuffle).map((n) => n.slice(0, 5))));
+  const numbers = chunk(range(75).map(n => n + 1), 15);
+  const shuffled = flatten(unzip(numbers.map(shuffle).map(n => n.slice(0, 5))));
   shuffled[12] = '★';
   return shuffled;
 }
@@ -14,7 +14,9 @@ const letters = ['B', 'I', 'N', 'G', 'O'];
 function Logo() {
   return (
     <p style={{ padding: 10 }}>
-      <span style={{ fontSize: 12 }}>premiumbingocards.com</span>
+      <span style={{ fontSize: 18, letterSpacing: 1, color: '#aaa' }}>
+        premiumbingocards.com
+      </span>
     </p>
   );
 }
@@ -30,9 +32,9 @@ export default class extends Component {
     };
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
-    this.setState({ n: +this.input.value });
+    this.setState({ n: Math.max(1, +this.input.value) }, () => window.print());
   };
 
   render() {
@@ -40,22 +42,35 @@ export default class extends Component {
       <div>
         <Head>
           <title>Premium Bingo Cards</title>
+          <meta
+            name="description"
+            content="Bingo card generator with a slight premium feel."
+          />
+          <meta name="keywords" content="bingo, cards, generator" />
         </Head>
+        <h1 style={{ margin: '10px 0' }}>Premium Bingo Cards</h1>
         <form onSubmit={this.handleSubmit}>
           <input
             type="number"
-            ref={(ref) => this.input = ref }
+            min={1}
+            ref={ref => (this.input = ref)}
             placeholder="How many copies do you need?"
           />
-          <button type="submit">Go</button>
+          <button type="submit">Print Cards</button>
         </form>
 
-        <button onClick={() => window.print()}>Print</button>
-
-        {range(this.state.n).map((i) => (
+        {range(this.state.n).map(i => (
           <div className="container" key={i}>
-            {letters.map((letter) => <div className="box" key={letter}><strong>{letter}</strong></div>)}
-            {bingo().map((value) => <div className="box" key={value}>{value}</div>)}
+            {letters.map(letter => (
+              <div className="box" key={letter}>
+                <strong>{letter}</strong>
+              </div>
+            ))}
+            {bingo().map(value => (
+              <div className="box" key={value}>
+                {value}
+              </div>
+            ))}
             {!this.props.premium && <Logo />}
           </div>
         ))}
@@ -69,7 +84,7 @@ export default class extends Component {
           }
 
           :global(body) {
-            font-family: sans-serif;
+            font-family: system-ui, sans-serif;
             font-size: 26px;
             display: flex;
             align-items: center;
@@ -79,24 +94,31 @@ export default class extends Component {
 
           :global(form) {
             display: flex;
-            background: red;
           }
 
           @media print {
-            form, button, input {
+            form,
+            button,
+            h1,
+            input {
               display: none;
             }
           }
 
           input {
-            padding: 5px;
-            font-size: 18px;
+            padding: 10px;
+            font-size: 20px;
             flex: 1;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
           }
 
           button {
-            padding: 5px;
-            font-size: 18px;
+            padding: 5px 10px;
+            font-size: 20px;
+            border: 0;
+            cursor: pointer;
+            color: #ff2d55;
           }
 
           .container {
