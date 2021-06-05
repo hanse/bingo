@@ -1,14 +1,18 @@
-import React, { Component } from 'react';
-import { render } from 'react-dom';
-import { shuffle, chunk, flatten, unzip, range } from 'lodash';
 import './index.css';
+
+import React, { Component } from 'react';
+import { chunk, flatten, range, shuffle, unzip } from 'lodash';
+
+import { render } from 'react-dom';
 
 function bingo() {
   const numbers = chunk(
-    range(75).map(n => n + 1),
+    range(75).map((n) => `${n + 1}`),
     15
   );
-  const shuffled = flatten(unzip(numbers.map(shuffle).map(n => n.slice(0, 5))));
+  const shuffled = flatten(
+    unzip(numbers.map((n) => shuffle(n)).map((n) => n.slice(0, 5)))
+  );
   shuffled[12] = '★';
   return shuffled;
 }
@@ -25,14 +29,18 @@ function Logo() {
   );
 }
 
-class Bingo extends Component {
+class Bingo extends Component<{ premium: boolean }> {
   state = {
-    n: 1
+    n: 1,
   };
 
-  handleSubmit = e => {
+  input = React.createRef<HTMLInputElement>();
+
+  handleSubmit = (e) => {
     e.preventDefault();
-    this.setState({ n: Math.max(1, +this.input.value) }, () => window.print());
+    this.setState({ n: Math.max(1, +this.input.current.value) }, () =>
+      window.print()
+    );
   };
 
   render() {
@@ -43,20 +51,20 @@ class Bingo extends Component {
           <input
             type="number"
             min={1}
-            ref={ref => (this.input = ref)}
+            ref={this.input}
             placeholder="How many copies do you need?"
           />
           <button type="submit">Print Cards</button>
         </form>
 
-        {range(this.state.n).map(i => (
+        {range(this.state.n).map((i) => (
           <div className="container" key={i}>
-            {letters.map(letter => (
+            {letters.map((letter) => (
               <div className="box" key={letter}>
                 <strong>{letter}</strong>
               </div>
             ))}
-            {bingo().map(value => (
+            {bingo().map((value) => (
               <div className="box" key={value}>
                 {value}
               </div>
@@ -69,4 +77,4 @@ class Bingo extends Component {
   }
 }
 
-render(<Bingo />, document.getElementById('root'));
+render(<Bingo premium={false} />, document.getElementById('root'));
