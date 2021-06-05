@@ -58,17 +58,19 @@ class Bingo extends Component<{ premium: boolean }> {
         </form>
 
         {range(this.state.n).map((i) => (
-          <div className="container" key={i}>
-            {letters.map((letter) => (
-              <div className="box" key={letter}>
-                <strong>{letter}</strong>
-              </div>
-            ))}
-            {bingo().map((value) => (
-              <div className="box" key={value}>
-                {value}
-              </div>
-            ))}
+          <div className="page">
+            <div className="container" key={i}>
+              {letters.map((letter) => (
+                <div className="box" key={letter}>
+                  <strong>{letter}</strong>
+                </div>
+              ))}
+              {bingo().map((value) => (
+                <div className="box" key={value}>
+                  {value}
+                </div>
+              ))}
+            </div>
             {!this.props.premium && <Logo />}
           </div>
         ))}

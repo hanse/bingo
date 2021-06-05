@@ -11,7 +11,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 30px;
+  overflow: visible;
 }
 
 form {
@@ -43,13 +43,26 @@ button {
   color: #ff2d55;
 }
 
+@page {
+  size: auto;
+  margin: 0;
+}
+
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.6cm;
+  page-break-after: always;
+}
+
 .container {
   display: flex;
   flex-direction: row;
   width: 500px;
   flex-wrap: wrap;
-  margin-top: 100px;
-  page-break-after: always;
+  border: 1px solid #ddd;
 }
 
 strong {
