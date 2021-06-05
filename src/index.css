@@ -14,8 +14,13 @@ body {
   overflow: visible;
 }
 
+h1 {
+  padding-top: 40px;
+}
+
 form {
   display: flex;
+  margin-top: 16px;
 }
 
 @media print {
@@ -41,6 +46,7 @@ button {
   border: 0;
   cursor: pointer;
   color: #ff2d55;
+  margin-left: 8px;
 }
 
 @page {

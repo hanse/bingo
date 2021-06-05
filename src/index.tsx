@@ -53,6 +53,7 @@ class Bingo extends Component<{ premium: boolean }> {
             min={1}
             ref={this.input}
             placeholder="How many copies do you need?"
+            autoFocus
           />
           <button type="submit">Print Cards</button>
         </form>
