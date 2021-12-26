@@ -2,50 +2,49 @@ import './index.css';
 
 import * as React from 'react';
 
-import { chunk, flatten, range, shuffle, unzip } from 'lodash';
+import { chunk, flatten, range, shuffle, unzip, zip } from 'lodash';
 
 import { render } from 'react-dom';
 
-function bingo() {
-  const numbers = chunk(
-    range(75).map((n) => `${n + 1}`),
-    15
-  );
+function bingo(rows: number, cols: number) {
+  const values = range(rows * cols * 3).map((n) => `${n + 1}`);
+  const chunks = chunk(values, Math.ceil(values.length / rows));
   const shuffled = flatten(
-    unzip(numbers.map((n) => shuffle(n)).map((n) => n.slice(0, 5)))
+    unzip(chunks.map((n) => shuffle(n)).map((n) => n.slice(0, cols)))
   );
-  shuffled[12] = '★';
+  shuffled[Math.floor((rows * cols) / 2)] = '★';
   return shuffled;
 }
 
-const letters = ['B', 'I', 'N', 'G', 'O'];
-
-function Logo() {
-  return (
-    <p style={{ padding: 10 }}>
-      <span style={{ fontSize: 18, letterSpacing: 1, color: '#aaa' }}>
-        premiumbingocards.com
-      </span>
-    </p>
-  );
-}
-
-function useBingos(n: number) {
+function useBingos(n: number, rows: number, cols: number) {
   return React.useMemo(() => {
-    return range(n).map(() => bingo());
-  }, [n]);
+    return range(n).map(() => bingo(rows, cols));
+  }, [n, rows, cols]);
 }
 
-function Bingo({ premium }: { premium: boolean }) {
+interface BingoProps {
+  premium: boolean;
+  cols?: number;
+  rows?: number;
+}
+
+function Bingo({ premium, rows = 5, cols = 5 }: BingoProps) {
   const [n, setN] = React.useState(1);
   const inputRef = React.useRef<HTMLInputElement>();
-  const bingos = useBingos(n);
+  const bingos = useBingos(n, rows, cols);
+
+  const letters = zip(
+    ['B', 'I', 'N', 'G', 'O'].slice(0, cols),
+    range(cols)
+  ).map(([a]) => a ?? '');
 
   const handleSubmit: React.FormEventHandler = (e) => {
     e.preventDefault();
     setN(Math.max(1, +inputRef.current.value));
     requestAnimationFrame(() => window.print());
   };
+
+  const flexBasis = `${100 / Math.max(1, cols)}%`;
 
   return (
     <div>
@@ -68,12 +67,12 @@ function Bingo({ premium }: { premium: boolean }) {
         <div className="page" key={i}>
           <div className="container" key={i}>
             {letters.map((letter) => (
-              <div className="box" key={letter}>
+              <div className="box" key={letter} style={{ flexBasis }}>
                 <strong>{letter}</strong>
               </div>
             ))}
             {bingo.map((value) => (
-              <div className="box" key={value}>
+              <div className="box" key={value} style={{ flexBasis }}>
                 {value}
               </div>
             ))}
@@ -82,6 +81,16 @@ function Bingo({ premium }: { premium: boolean }) {
         </div>
       ))}
     </div>
+  );
+}
+
+function Logo() {
+  return (
+    <p style={{ padding: 10 }}>
+      <span style={{ fontSize: 18, letterSpacing: 1, color: '#aaa' }}>
+        premiumbingocards.com
+      </span>
+    </p>
   );
 }
 
