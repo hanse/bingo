@@ -46,20 +46,22 @@ class Bingo extends Component<{ premium: boolean }> {
   render() {
     return (
       <div>
-        <h1 style={{ margin: '10px 0' }}>Premium Bingo Cards</h1>
-        <form onSubmit={this.handleSubmit}>
-          <input
-            type="number"
-            min={1}
-            ref={this.input}
-            placeholder="How many copies do you need?"
-            autoFocus
-          />
-          <button type="submit">Print Cards</button>
-        </form>
+        <header>
+          <h1 style={{ margin: '10px 0' }}>Premium Bingo Cards</h1>
+          <form onSubmit={this.handleSubmit}>
+            <input
+              type="number"
+              min={1}
+              ref={this.input}
+              placeholder="How many copies do you need?"
+              autoFocus
+            />
+            <button type="submit">Print Cards</button>
+          </form>
+        </header>
 
         {range(this.state.n).map((i) => (
-          <div className="page">
+          <div className="page" key={i}>
             <div className="container" key={i}>
               {letters.map((letter) => (
                 <div className="box" key={letter}>
