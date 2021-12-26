@@ -1,6 +1,7 @@
 import './index.css';
 
-import React, { Component } from 'react';
+import * as React from 'react';
+
 import { chunk, flatten, range, shuffle, unzip } from 'lodash';
 
 import { render } from 'react-dom';
@@ -29,57 +30,59 @@ function Logo() {
   );
 }
 
-class Bingo extends Component<{ premium: boolean }> {
-  state = {
-    n: 1,
-  };
+function useBingos(n: number) {
+  return React.useMemo(() => {
+    return range(n).map(() => bingo());
+  }, [n]);
+}
 
-  input = React.createRef<HTMLInputElement>();
+function Bingo({ premium }: { premium: boolean }) {
+  const [n, setN] = React.useState(1);
+  const inputRef = React.useRef<HTMLInputElement>();
+  const bingos = useBingos(n);
 
-  handleSubmit = (e) => {
+  const handleSubmit: React.FormEventHandler = (e) => {
     e.preventDefault();
-    this.setState({ n: Math.max(1, +this.input.current.value) }, () =>
-      window.print()
-    );
+    setN(Math.max(1, +inputRef.current.value));
+    requestAnimationFrame(() => window.print());
   };
 
-  render() {
-    return (
-      <div>
-        <header>
-          <h1 style={{ margin: '10px 0' }}>Premium Bingo Cards</h1>
-          <form onSubmit={this.handleSubmit}>
-            <input
-              type="number"
-              min={1}
-              ref={this.input}
-              placeholder="How many copies do you need?"
-              autoFocus
-            />
-            <button type="submit">Print Cards</button>
-          </form>
-        </header>
+  return (
+    <div>
+      <header>
+        <h1>Premium Bingo Cards</h1>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="number"
+            required
+            min={1}
+            ref={inputRef}
+            placeholder="How many copies do you need?"
+            autoFocus
+          />
+          <button type="submit">Print Cards</button>
+        </form>
+      </header>
 
-        {range(this.state.n).map((i) => (
-          <div className="page" key={i}>
-            <div className="container" key={i}>
-              {letters.map((letter) => (
-                <div className="box" key={letter}>
-                  <strong>{letter}</strong>
-                </div>
-              ))}
-              {bingo().map((value) => (
-                <div className="box" key={value}>
-                  {value}
-                </div>
-              ))}
-            </div>
-            {!this.props.premium && <Logo />}
+      {bingos.map((bingo, i) => (
+        <div className="page" key={i}>
+          <div className="container" key={i}>
+            {letters.map((letter) => (
+              <div className="box" key={letter}>
+                <strong>{letter}</strong>
+              </div>
+            ))}
+            {bingo.map((value) => (
+              <div className="box" key={value}>
+                {value}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    );
-  }
+          {!premium && <Logo />}
+        </div>
+      ))}
+    </div>
+  );
 }
 
 render(<Bingo premium={false} />, document.getElementById('root'));
