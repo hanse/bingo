@@ -62,8 +62,7 @@ input {
   flex: 1;
   border: 1px solid #ddd;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
+  border-radius: 4px;
 }
 
 button {
@@ -74,6 +73,7 @@ button {
   color: #ff2d55;
   background: #eaeaea;
   margin-left: 8px;
+  border-radius: 4px;
 }
 
 @page {
