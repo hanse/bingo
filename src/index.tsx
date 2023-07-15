@@ -2,15 +2,15 @@ import './index.css';
 
 import * as React from 'react';
 
-import { chunk, flatten, range, shuffle, unzip, zip } from 'lodash';
+import { createRoot } from 'react-dom/client';
 
-import { render } from 'react-dom';
+import { chunk, flatten, range, shuffle, unzip, zip } from 'lodash';
 
 function bingo(rows: number, cols: number) {
   const values = range(rows * cols * 3).map((n) => `${n + 1}`);
   const chunks = chunk(values, Math.ceil(values.length / rows));
   const shuffled = flatten(
-    unzip(chunks.map((n) => shuffle(n)).map((n) => n.slice(0, cols)))
+    unzip(chunks.map((n) => shuffle(n)).map((n) => n.slice(0, cols))),
   );
   shuffled[Math.floor((rows * cols) / 2)] = '★';
   return shuffled;
@@ -30,17 +30,17 @@ interface BingoProps {
 
 function Bingo({ premium, rows = 5, cols = 5 }: BingoProps) {
   const [n, setN] = React.useState(1);
-  const inputRef = React.useRef<HTMLInputElement>();
+  const inputRef = React.useRef<HTMLInputElement>(null);
   const bingos = useBingos(n, rows, cols);
 
   const letters = zip(
     ['B', 'I', 'N', 'G', 'O'].slice(0, cols),
-    range(cols)
+    range(cols),
   ).map(([a]) => a ?? '');
 
   const handleSubmit: React.FormEventHandler = (e) => {
     e.preventDefault();
-    setN(Math.max(1, +inputRef.current.value));
+    setN(Math.max(1, +inputRef.current!.value));
     requestAnimationFrame(() => window.print());
   };
 
@@ -94,4 +94,4 @@ function Logo() {
   );
 }
 
-render(<Bingo premium={false} />, document.getElementById('root'));
+createRoot(document.getElementById('root')!).render(<Bingo premium={false} />);
