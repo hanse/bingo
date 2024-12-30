@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { createRoot } from 'react-dom/client';
 
-import { chunk, flatten, range, shuffle, unzip, zip } from 'lodash';
+import { chunk, flatten, range, shuffle, unzip, zip } from 'lodash-es';
 
 function bingo(rows: number, cols: number) {
   const values = range(rows * cols * 3).map((n) => `${n + 1}`);
